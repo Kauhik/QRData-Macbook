@@ -1,0 +1,556 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		8076C8332E77B70200D0697A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8076C8172E77B70100D0697A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8076C81E2E77B70100D0697A;
+			remoteInfo = "QRData Macbook";
+		};
+		8076C83D2E77B70200D0697A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8076C8172E77B70100D0697A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8076C81E2E77B70100D0697A;
+			remoteInfo = "QRData Macbook";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		8076C81F2E77B70100D0697A /* QRData Macbook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "QRData Macbook.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8076C8322E77B70200D0697A /* QRData MacbookTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "QRData MacbookTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8076C83C2E77B70200D0697A /* QRData MacbookUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "QRData MacbookUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		8076C8212E77B70100D0697A /* QRData Macbook */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "QRData Macbook";
+			sourceTree = "<group>";
+		};
+		8076C8352E77B70200D0697A /* QRData MacbookTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "QRData MacbookTests";
+			sourceTree = "<group>";
+		};
+		8076C83F2E77B70200D0697A /* QRData MacbookUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "QRData MacbookUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8076C81C2E77B70100D0697A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8076C82F2E77B70200D0697A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8076C8392E77B70200D0697A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		8076C8162E77B70100D0697A = {
+			isa = PBXGroup;
+			children = (
+				8076C8212E77B70100D0697A /* QRData Macbook */,
+				8076C8352E77B70200D0697A /* QRData MacbookTests */,
+				8076C83F2E77B70200D0697A /* QRData MacbookUITests */,
+				8076C8202E77B70100D0697A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8076C8202E77B70100D0697A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8076C81F2E77B70100D0697A /* QRData Macbook.app */,
+				8076C8322E77B70200D0697A /* QRData MacbookTests.xctest */,
+				8076C83C2E77B70200D0697A /* QRData MacbookUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8076C81E2E77B70100D0697A /* QRData Macbook */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8076C8462E77B70200D0697A /* Build configuration list for PBXNativeTarget "QRData Macbook" */;
+			buildPhases = (
+				8076C81B2E77B70100D0697A /* Sources */,
+				8076C81C2E77B70100D0697A /* Frameworks */,
+				8076C81D2E77B70100D0697A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				8076C8212E77B70100D0697A /* QRData Macbook */,
+			);
+			name = "QRData Macbook";
+			packageProductDependencies = (
+			);
+			productName = "QRData Macbook";
+			productReference = 8076C81F2E77B70100D0697A /* QRData Macbook.app */;
+			productType = "com.apple.product-type.application";
+		};
+		8076C8312E77B70200D0697A /* QRData MacbookTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8076C8492E77B70200D0697A /* Build configuration list for PBXNativeTarget "QRData MacbookTests" */;
+			buildPhases = (
+				8076C82E2E77B70200D0697A /* Sources */,
+				8076C82F2E77B70200D0697A /* Frameworks */,
+				8076C8302E77B70200D0697A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8076C8342E77B70200D0697A /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				8076C8352E77B70200D0697A /* QRData MacbookTests */,
+			);
+			name = "QRData MacbookTests";
+			packageProductDependencies = (
+			);
+			productName = "QRData MacbookTests";
+			productReference = 8076C8322E77B70200D0697A /* QRData MacbookTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		8076C83B2E77B70200D0697A /* QRData MacbookUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8076C84C2E77B70200D0697A /* Build configuration list for PBXNativeTarget "QRData MacbookUITests" */;
+			buildPhases = (
+				8076C8382E77B70200D0697A /* Sources */,
+				8076C8392E77B70200D0697A /* Frameworks */,
+				8076C83A2E77B70200D0697A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8076C83E2E77B70200D0697A /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				8076C83F2E77B70200D0697A /* QRData MacbookUITests */,
+			);
+			name = "QRData MacbookUITests";
+			packageProductDependencies = (
+			);
+			productName = "QRData MacbookUITests";
+			productReference = 8076C83C2E77B70200D0697A /* QRData MacbookUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8076C8172E77B70100D0697A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1620;
+				LastUpgradeCheck = 1620;
+				TargetAttributes = {
+					8076C81E2E77B70100D0697A = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					8076C8312E77B70200D0697A = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 8076C81E2E77B70100D0697A;
+					};
+					8076C83B2E77B70200D0697A = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 8076C81E2E77B70100D0697A;
+					};
+				};
+			};
+			buildConfigurationList = 8076C81A2E77B70100D0697A /* Build configuration list for PBXProject "QRData Macbook" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 8076C8162E77B70100D0697A;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 8076C8202E77B70100D0697A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8076C81E2E77B70100D0697A /* QRData Macbook */,
+				8076C8312E77B70200D0697A /* QRData MacbookTests */,
+				8076C83B2E77B70200D0697A /* QRData MacbookUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8076C81D2E77B70100D0697A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8076C8302E77B70200D0697A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8076C83A2E77B70200D0697A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8076C81B2E77B70100D0697A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8076C82E2E77B70200D0697A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8076C8382E77B70200D0697A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		8076C8342E77B70200D0697A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8076C81E2E77B70100D0697A /* QRData Macbook */;
+			targetProxy = 8076C8332E77B70200D0697A /* PBXContainerItemProxy */;
+		};
+		8076C83E2E77B70200D0697A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8076C81E2E77B70100D0697A /* QRData Macbook */;
+			targetProxy = 8076C83D2E77B70200D0697A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		8076C8442E77B70200D0697A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		8076C8452E77B70200D0697A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		8076C8472E77B70200D0697A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "QRData Macbook/QRData_Macbook.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"QRData Macbook/Preview Content\"";
+				DEVELOPMENT_TEAM = Z8PS8WLYZ6;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.kaushikmanian.QRData-Macbook";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		8076C8482E77B70200D0697A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "QRData Macbook/QRData_Macbook.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"QRData Macbook/Preview Content\"";
+				DEVELOPMENT_TEAM = Z8PS8WLYZ6;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.kaushikmanian.QRData-Macbook";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		8076C84A2E77B70200D0697A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Z8PS8WLYZ6;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.kaushikmanian.QRData-MacbookTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/QRData Macbook.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/QRData Macbook";
+			};
+			name = Debug;
+		};
+		8076C84B2E77B70200D0697A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Z8PS8WLYZ6;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.kaushikmanian.QRData-MacbookTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/QRData Macbook.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/QRData Macbook";
+			};
+			name = Release;
+		};
+		8076C84D2E77B70200D0697A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Z8PS8WLYZ6;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.kaushikmanian.QRData-MacbookUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = "QRData Macbook";
+			};
+			name = Debug;
+		};
+		8076C84E2E77B70200D0697A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Z8PS8WLYZ6;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.kaushikmanian.QRData-MacbookUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = "QRData Macbook";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8076C81A2E77B70100D0697A /* Build configuration list for PBXProject "QRData Macbook" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8076C8442E77B70200D0697A /* Debug */,
+				8076C8452E77B70200D0697A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8076C8462E77B70200D0697A /* Build configuration list for PBXNativeTarget "QRData Macbook" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8076C8472E77B70200D0697A /* Debug */,
+				8076C8482E77B70200D0697A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8076C8492E77B70200D0697A /* Build configuration list for PBXNativeTarget "QRData MacbookTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8076C84A2E77B70200D0697A /* Debug */,
+				8076C84B2E77B70200D0697A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8076C84C2E77B70200D0697A /* Build configuration list for PBXNativeTarget "QRData MacbookUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8076C84D2E77B70200D0697A /* Debug */,
+				8076C84E2E77B70200D0697A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 8076C8172E77B70100D0697A /* Project object */;
+}
