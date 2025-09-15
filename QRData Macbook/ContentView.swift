@@ -6,54 +6,115 @@
 //
 
 import SwiftUI
-import SwiftData
+import CloudKit
+import AppKit
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+
+    // ==== Configure this once ====
+    // Updated with your real container ID.
+    private let containerID = "iCloud.com.kaushikmanian.LockerQ"
+    private let bootstrapRecordName = "bootstrap-lockerqyes"     // fixed durable name
+
+    // ==== UI state ====
+    @State private var folderURL: URL?
+    @State private var version: Int = Int(Date().timeIntervalSince1970)
+    @State private var status: String = "Select a folder and Publish."
+    @State private var latestQR: NSImage?
 
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
-                }
-                .onDelete(perform: deleteItems)
+        VStack(alignment: .leading, spacing: 16) {
+            Text("PackBuilder").font(.largeTitle).bold()
+
+            HStack(spacing: 12) {
+                Button("Choose Folder…", action: pickFolder)
+                Text(folderURL?.path(percentEncoded: false) ?? "No folder selected")
+                    .font(.callout).foregroundStyle(.secondary)
+                    .lineLimit(1).truncationMode(.middle)
             }
-            .navigationSplitViewColumnWidth(min: 180, ideal: 200)
-            .toolbar {
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
+
+            HStack(spacing: 12) {
+                Text("Version:")
+                TextField("Version", value: $version, formatter: NumberFormatter())
+                    .textFieldStyle(.roundedBorder).frame(width: 160)
+                Spacer()
+                Button("Seed Schema…") { Task { await seedSchema() } }
+                Button("Publish to CloudKit") { Task { await publish() } }
+                    .keyboardShortcut(.defaultAction)
             }
-        } detail: {
-            Text("Select an item")
+
+            Text(status).font(.callout).foregroundStyle(.secondary)
+
+            Divider().padding(.vertical, 4)
+
+            if let img = latestQR {
+                Image(nsImage: img).interpolation(.none)
+                    .resizable().frame(width: 240, height: 240)
+                    .border(.gray)
+                Button("Save QR as PNG…") { saveQR(img) }
+            }
+
+            Spacer()
+        }
+        .padding(20)
+    }
+
+    // MARK: - Actions
+
+    private func pickFolder() {
+        let panel = NSOpenPanel()
+        panel.canChooseDirectories = true
+        panel.canChooseFiles = false
+        panel.allowsMultipleSelection = false
+        if panel.runModal() == .OK {
+            folderURL = panel.urls.first
         }
     }
 
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
+    private func seedSchema() async {
+        guard let folder = folderURL else { status = "Pick a folder first."; return }
+        status = "Seeding schema…"
+        do {
+            try await SchemaSeeder.seed(containerID: containerID, sampleFolder: folder)
+            status = "Schema seeded in Development."
+        } catch {
+            status = "Seed failed: \(error.localizedDescription)"
         }
     }
 
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
+    private func publish() async {
+        guard let folder = folderURL else { status = "Pick a folder first."; return }
+        status = "Uploading pack…"
+        do {
+            let uploader = CloudKitUploader(containerID: containerID)
+            let res = try await uploader.uploadPack(from: folder, version: version)
+            try await uploader.updateBootstrap(toLatest: res.packRecordID,
+                                               version: res.version,
+                                               bootstrapRecordName: bootstrapRecordName)
+            // Build bootstrap QR deep link
+            let qrString = "lockerqyes://bootstrap?container=\(containerID)&record=\(bootstrapRecordName)"
+            guard let img = QRGenerator.makeQR(from: qrString, scale: 10) else {
+                status = "Published v\(res.version), but QR failed."
+                return
             }
+            latestQR = img
+            status = "Published v\(res.version). QR ready."
+        } catch {
+            status = "Publish failed: \(error.localizedDescription)"
+        }
+    }
+
+    private func saveQR(_ image: NSImage) {
+        let panel = NSSavePanel()
+        panel.allowedContentTypes = [.png]
+        panel.nameFieldStringValue = "LockerQYes-Bootstrap-QR.png"
+        if panel.runModal() == .OK, let url = panel.url {
+            do { try QRGenerator.savePNG(image, to: url) }
+            catch { status = "Save failed: \(error.localizedDescription)" }
         }
     }
 }
 
 #Preview {
     ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
 }
