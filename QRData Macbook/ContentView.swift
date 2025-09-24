@@ -18,6 +18,7 @@ struct ContentView: View {
 
     // ==== UI state ====
     @State private var folderURL: URL?
+    @State private var isAutoVersion: Bool = true                    // NEW: auto-version toggle
     @State private var version: Int = Int(Date().timeIntervalSince1970)
     @State private var status: String = "Select a folder and Publish."
     @State private var latestQR: NSImage?
@@ -44,14 +45,29 @@ struct ContentView: View {
                 }
 
                 // Version and actions
-                HStack(spacing: 12) {
-                    Text("Version:")
-                    TextField("Version", value: $version, formatter: NumberFormatter())
-                        .textFieldStyle(.roundedBorder).frame(width: 160)
-                    Spacer()
-                    Button("Seed Schema…") { Task { await seedSchema() } }
-                    Button("Publish to CloudKit") { Task { await publish() } }
-                        .keyboardShortcut(.defaultAction)
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 12) {
+                        Toggle("Auto Version", isOn: $isAutoVersion)
+                            .toggleStyle(.switch)
+                        Spacer()
+                    }
+                    HStack(spacing: 12) {
+                        Text("Version:")
+                        TextField("Version", value: $version, formatter: NumberFormatter())
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: 180)
+                            .disabled(isAutoVersion) // disabled when auto
+                            .opacity(isAutoVersion ? 0.5 : 1.0)
+                        if isAutoVersion {
+                            Text("Will use current timestamp at publish.")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Button("Seed Schema…") { Task { await seedSchema() } }
+                        Button("Publish to CloudKit") { Task { await publish() } }
+                            .keyboardShortcut(.defaultAction)
+                    }
                 }
 
                 // Custom URLs
@@ -160,6 +176,16 @@ struct ContentView: View {
         guard let folder = folderURL else { status = "Pick a folder first."; return }
         status = "Uploading pack…"
         do {
+            // Compute version depending on toggle
+            let publishVersion: Int
+            if isAutoVersion {
+                publishVersion = Int(Date().timeIntervalSince1970)
+                // reflect the used version back into the field for visibility/history
+                version = publishVersion
+            } else {
+                publishVersion = version
+            }
+
             let uploader = CloudKitUploader(containerID: containerID)
 
             let urls = customURLStrings
@@ -169,7 +195,7 @@ struct ContentView: View {
 
             let res = try await uploader.uploadPack(
                 from: folder,
-                version: version,
+                version: publishVersion,
                 customURLs: Array(urls.prefix(5)),
                 extraFileURLs: selectedCSVURLs()
             )
