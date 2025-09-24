@@ -16,7 +16,28 @@ struct CloudKitUploader {
         self.container = CKContainer(identifier: containerID)
     }
 
-    struct UploadResult { let packRecordID: CKRecord.ID; let version: Int }
+    struct UploadResult {
+        let packRecordID: CKRecord.ID
+        let version: Int
+        let assetCount: Int
+    }
+
+    struct PackSummary: Identifiable, Equatable {
+        let id: CKRecord.ID
+        let recordID: CKRecord.ID
+        let recordName: String
+        let version: Int
+        let creationDate: Date
+        let assetCount: Int
+        init(record: CKRecord, version: Int, assetCount: Int) {
+            self.recordID = record.recordID
+            self.id = record.recordID
+            self.recordName = record.recordID.recordName
+            self.version = version
+            self.creationDate = record.creationDate ?? .distantPast
+            self.assetCount = assetCount
+        }
+    }
 
     // Accepts a base folder of assets, up to 5 custom URLs, and extra file URLs (e.g., CSVs)
     func uploadPack(
@@ -27,7 +48,7 @@ struct CloudKitUploader {
     ) async throws -> UploadResult {
         let db = container.publicCloudDatabase
 
-        // Gather files from folder (regular files only)
+        // Gather files (regular files only)
         let folderFiles = try FileManager.default.contentsOfDirectory(
             at: folder, includingPropertiesForKeys: [.isRegularFileKey], options: [.skipsHiddenFiles]
         ).filter { (try? $0.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile) ?? false }
@@ -106,7 +127,7 @@ struct CloudKitUploader {
 
         let saved = try await db.save(record)
         try? FileManager.default.removeItem(at: tmp)
-        return .init(packRecordID: saved.recordID, version: version)
+        return .init(packRecordID: saved.recordID, version: version, assetCount: items.count)
     }
 
     func updateBootstrap(toLatest packRecordID: CKRecord.ID,
@@ -119,5 +140,82 @@ struct CloudKitUploader {
         record["version"] = version as CKRecordValue
         record["latestPack"] = CKRecord.Reference(recordID: packRecordID, action: .none)
         _ = try await db.save(record)
+    }
+
+    func clearBootstrap(bootstrapRecordName: String) async throws {
+        let db = container.publicCloudDatabase
+        let id = CKRecord.ID(recordName: bootstrapRecordName)
+        let record = (try? await db.record(for: id)) ?? CKRecord(recordType: "Bootstrap", recordID: id)
+        record["latestPack"] = nil
+        record["version"] = 0 as CKRecordValue
+        _ = try await db.save(record)
+    }
+
+    func deletePack(recordName: String) async throws {
+        let db = container.publicCloudDatabase
+        let id = CKRecord.ID(recordName: recordName)
+        _ = try await db.deleteRecord(withID: id)
+    }
+
+    // MARK: - History helpers (Cloud-driven)
+
+    func fetchBootstrapLatest(bootstrapRecordName: String) async throws -> CKRecord.ID? {
+        let db = container.publicCloudDatabase
+        let id = CKRecord.ID(recordName: bootstrapRecordName)
+        let record = try await db.record(for: id)
+        if let ref = record["latestPack"] as? CKRecord.Reference {
+            return ref.recordID
+        }
+        return nil
+    }
+
+    func fetchContentPacks(limit: Int = 100) async throws -> [PackSummary] {
+        let db = container.publicCloudDatabase
+
+        // IMPORTANT: Use a predicate that references a QUERYABLE field (version),
+        // otherwise CloudKit falls back to recordName (not queryable in your schema).
+        let predicate = NSPredicate(format: "version >= %d", 0)
+        let query = CKQuery(recordType: "ContentPack", predicate: predicate)
+        query.sortDescriptors = [NSSortDescriptor(key: "version", ascending: false)]
+
+        var cursor: CKQueryOperation.Cursor?
+        var out: [PackSummary] = []
+
+        repeat {
+            // Let Swift infer tuple type to avoid `any Error` mismatches.
+            let page = try await (cursor != nil
+                                  ? db.records(continuingMatchFrom: cursor!)
+                                  : db.records(matching: query, desiredKeys: nil))
+
+            for (_, result) in page.matchResults {
+                switch result {
+                case .success(let rec):
+                    let version = rec["version"] as? Int ?? 0
+                    var assetCount = rec.allKeys().filter { $0.hasPrefix("asset_") }.count
+
+                    if assetCount == 0, let manifestAsset = rec["manifest"] as? CKAsset,
+                       let url = manifestAsset.fileURL {
+                        struct Man: Codable {
+                            struct Item: Codable { let key: String; let filename: String; let sha256: String }
+                            let version: Int
+                            let assets: [Item]
+                        }
+                        if let data = try? Data(contentsOf: url),
+                           let man = try? JSONDecoder().decode(Man.self, from: data) {
+                            assetCount = man.assets.count
+                        }
+                    }
+
+                    out.append(.init(record: rec, version: version, assetCount: assetCount))
+
+                case .failure:
+                    continue
+                }
+            }
+
+            cursor = page.queryCursor
+        } while cursor != nil && out.count < limit
+
+        return out
     }
 }

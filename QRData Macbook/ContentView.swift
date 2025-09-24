@@ -16,9 +16,13 @@ struct ContentView: View {
     private let containerID = "iCloud.com.kaushikmanian.LockerQ"
     private let bootstrapRecordName = "bootstrap-lockerqyes"     // fixed durable name
 
-    // ==== UI state ====
+    // ==== Navigation ====
+    enum TopTab: String, CaseIterable, Identifiable { case publish = "Publish", history = "History"; var id: String { rawValue } }
+    @State private var selectedTab: TopTab = .publish
+
+    // ==== UI state (Publish) ====
     @State private var folderURL: URL?
-    @State private var isAutoVersion: Bool = true                    // NEW: auto-version toggle
+    @State private var isAutoVersion: Bool = true
     @State private var version: Int = Int(Date().timeIntervalSince1970)
     @State private var status: String = "Select a folder and Publish."
     @State private var latestQR: NSImage?
@@ -26,16 +30,66 @@ struct ContentView: View {
     // Custom URLs (up to 5)
     @State private var customURLStrings: [String] = Array(repeating: "", count: 5)
 
-    // Exactly 3 CSV inputs (no drag & drop)
+    // Exactly 3 CSV inputs
     @State private var csvURL1: URL?
     @State private var csvURL2: URL?
     @State private var csvURL3: URL?
 
-    var body: some View {
-        ScrollView { // allow vertical scrolling
-            VStack(alignment: .leading, spacing: 16) {
-                Text("PackBuilder").font(.largeTitle).bold()
+    // ==== Cloud history VM ====
+    @StateObject private var historyVM = CloudHistoryVM(
+        containerID: "iCloud.com.kaushikmanian.LockerQ",
+        bootstrapRecordName: "bootstrap-lockerqyes"
+    )
 
+    var body: some View {
+        NavigationStack {
+            Group {
+                switch selectedTab {
+                case .publish: publishView
+                case .history: historyView
+                }
+            }
+            .navigationTitle("PackBuilder")
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Picker("", selection: $selectedTab) {
+                        ForEach(TopTab.allCases) { tab in
+                            Text(tab.rawValue).tag(tab)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .frame(width: 300)
+                }
+                if selectedTab == .history {
+                    ToolbarItem(placement: .automatic) {
+                        Button {
+                            Task { await historyVM.reload() }
+                        } label: {
+                            if historyVM.isLoading {
+                                ProgressView()
+                            } else {
+                                Text("Refresh")
+                            }
+                        }
+                    }
+                }
+            }
+            .task {
+                if selectedTab == .history { await historyVM.reload() }
+            }
+            .onChange(of: selectedTab) { _, newValue in
+                if newValue == .history {
+                    Task { await historyVM.reload() }
+                }
+            }
+        }
+    }
+
+    // MARK: - PUBLISH TAB
+
+    private var publishView: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
                 // Asset folder picker
                 HStack(spacing: 12) {
                     Button("Choose Folder…", action: pickFolder)
@@ -56,7 +110,7 @@ struct ContentView: View {
                         TextField("Version", value: $version, formatter: NumberFormatter())
                             .textFieldStyle(.roundedBorder)
                             .frame(width: 180)
-                            .disabled(isAutoVersion) // disabled when auto
+                            .disabled(isAutoVersion)
                             .opacity(isAutoVersion ? 0.5 : 1.0)
                         if isAutoVersion {
                             Text("Will use current timestamp at publish.")
@@ -79,9 +133,9 @@ struct ContentView: View {
                     }
                 }
 
-                // Three CSV selectors (no drag & drop)
+                // Three CSV selectors
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("CSV Files (exactly 3 inputs; optional):")
+                    Text("CSV Files (up to 3; optional):")
 
                     csvRow(title: "Choose CSV 1…", url: $csvURL1)
                     csvRow(title: "Choose CSV 2…", url: $csvURL2)
@@ -113,8 +167,6 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - Small subviews
-
     @ViewBuilder
     private func csvRow(title: String, url: Binding<URL?>) -> some View {
         HStack(spacing: 12) {
@@ -125,7 +177,54 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - Actions
+    // MARK: - HISTORY TAB (Cloud driven)
+
+    private var historyView: some View {
+        VStack(spacing: 0) {
+            if let msg = historyVM.status {
+                Text(msg)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .padding(.vertical, 8)
+            }
+            List {
+                ForEach(historyVM.packs) { pack in
+                    HStack(alignment: .firstTextBaseline, spacing: 12) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            HStack {
+                                Text("v\(pack.version)")
+                                    .font(.headline)
+                                if let latest = historyVM.currentLatestID, latest == pack.recordID {
+                                    Text("Current")
+                                        .font(.caption2)
+                                        .padding(.horizontal, 6)
+                                        .padding(.vertical, 2)
+                                        .background(Color.accentColor.opacity(0.12))
+                                        .cornerRadius(6)
+                                }
+                            }
+                            Text(pack.recordName)
+                                .font(.caption)
+                                .textSelection(.enabled)
+                            Text(pack.creationDate.formatted(date: .abbreviated, time: .standard))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            Text("Assets: \(pack.assetCount)")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Button(role: .destructive) {
+                            Task { await historyVM.delete(pack) }
+                        } label: { Text("Delete") }
+                        .disabled(historyVM.isLoading)
+                    }
+                }
+            }
+        }
+    }
+
+    // MARK: - Actions (shared)
 
     private func pickFolder() {
         let panel = NSOpenPanel()
@@ -180,7 +279,6 @@ struct ContentView: View {
             let publishVersion: Int
             if isAutoVersion {
                 publishVersion = Int(Date().timeIntervalSince1970)
-                // reflect the used version back into the field for visibility/history
                 version = publishVersion
             } else {
                 publishVersion = version
@@ -193,11 +291,13 @@ struct ContentView: View {
                 .filter { !$0.isEmpty }
                 .compactMap { URL(string: $0) }
 
+            let extraCSV = selectedCSVURLs()
+
             let res = try await uploader.uploadPack(
                 from: folder,
                 version: publishVersion,
                 customURLs: Array(urls.prefix(5)),
-                extraFileURLs: selectedCSVURLs()
+                extraFileURLs: extraCSV
             )
 
             try await uploader.updateBootstrap(
@@ -205,6 +305,9 @@ struct ContentView: View {
                 version: res.version,
                 bootstrapRecordName: bootstrapRecordName
             )
+
+            // After publish, refresh history view silently
+            Task { await historyVM.reload() }
 
             // Build bootstrap QR deep link
             let qrString = "lockerqyes://bootstrap?container=\(containerID)&record=\(bootstrapRecordName)"
