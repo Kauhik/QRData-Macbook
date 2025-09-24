@@ -190,28 +190,33 @@ struct ContentView: View {
             List {
                 ForEach(historyVM.packs) { pack in
                     HStack(alignment: .firstTextBaseline, spacing: 12) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            HStack {
-                                Text("v\(pack.version)")
-                                    .font(.headline)
-                                if let latest = historyVM.currentLatestID, latest == pack.recordID {
-                                    Text("Current")
-                                        .font(.caption2)
-                                        .padding(.horizontal, 6)
-                                        .padding(.vertical, 2)
-                                        .background(Color.accentColor.opacity(0.12))
-                                        .cornerRadius(6)
+                        // Navigate to asset details
+                        NavigationLink {
+                            PackAssetsView(containerID: containerID, summary: pack)
+                        } label: {
+                            VStack(alignment: .leading, spacing: 4) {
+                                HStack {
+                                    Text("v\(pack.version)")
+                                        .font(.headline)
+                                    if let latest = historyVM.currentLatestID, latest == pack.recordID {
+                                        Text("Current")
+                                            .font(.caption2)
+                                            .padding(.horizontal, 6)
+                                            .padding(.vertical, 2)
+                                            .background(Color.accentColor.opacity(0.12))
+                                            .cornerRadius(6)
+                                    }
                                 }
+                                Text(pack.recordName)
+                                    .font(.caption)
+                                    .textSelection(.enabled)
+                                Text(pack.creationDate.formatted(date: .abbreviated, time: .standard))
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                Text("Assets: \(pack.assetCount)")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
                             }
-                            Text(pack.recordName)
-                                .font(.caption)
-                                .textSelection(.enabled)
-                            Text(pack.creationDate.formatted(date: .abbreviated, time: .standard))
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                            Text("Assets: \(pack.assetCount)")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
                         }
                         Spacer()
                         Button(role: .destructive) {
@@ -276,13 +281,8 @@ struct ContentView: View {
         status = "Uploading pack…"
         do {
             // Compute version depending on toggle
-            let publishVersion: Int
-            if isAutoVersion {
-                publishVersion = Int(Date().timeIntervalSince1970)
-                version = publishVersion
-            } else {
-                publishVersion = version
-            }
+            let publishVersion: Int = isAutoVersion ? Int(Date().timeIntervalSince1970) : version
+            if isAutoVersion { version = publishVersion }
 
             let uploader = CloudKitUploader(containerID: containerID)
 
