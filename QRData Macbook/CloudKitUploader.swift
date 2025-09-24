@@ -18,7 +18,8 @@ struct CloudKitUploader {
 
     struct UploadResult { let packRecordID: CKRecord.ID; let version: Int }
 
-    func uploadPack(from folder: URL, version: Int, customURL: URL?) async throws -> UploadResult {
+    // Added `customURLs` (up to 5)
+    func uploadPack(from folder: URL, version: Int, customURLs: [URL]) async throws -> UploadResult {
         let db = container.publicCloudDatabase
 
         // Gather files (regular files only)
@@ -76,9 +77,13 @@ struct CloudKitUploader {
             record[key] = CKAsset(fileURL: file)
         }
 
-        // Optional custom URL field on the pack
-        if let customURL {
-            record["customURL"] = customURL.absoluteString as CKRecordValue
+        // Store up to 5 URLs as a JSON-encoded string field "customURLs"
+        let limited = Array(customURLs.prefix(5)).map { $0.absoluteString }
+        if !limited.isEmpty {
+            let json = try JSONEncoder().encode(limited)
+            if let jsonString = String(data: json, encoding: .utf8) {
+                record["customURLs"] = jsonString as CKRecordValue
+            }
         }
 
         let manifest = Manifest(version: version, assets: items)

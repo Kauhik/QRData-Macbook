@@ -13,14 +13,14 @@ struct ContentView: View {
 
     // ==== Configure this once ====
     private let containerID = "iCloud.com.kaushikmanian.LockerQ"
-    private let bootstrapRecordName = "bootstrap-lockerqyes"
+    private let bootstrapRecordName = "bootstrap-lockerqyes"     // fixed durable name
 
     // ==== UI state ====
     @State private var folderURL: URL?
     @State private var version: Int = Int(Date().timeIntervalSince1970)
     @State private var status: String = "Select a folder and Publish."
     @State private var latestQR: NSImage?
-    @State private var customURLString: String = ""
+    @State private var customURLStrings: [String] = Array(repeating: "", count: 5) // up to 5 URLs
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -43,10 +43,12 @@ struct ContentView: View {
                     .keyboardShortcut(.defaultAction)
             }
 
-            HStack(spacing: 12) {
-                Text("Custom URL (optional):")
-                TextField("https://example.com/page", text: $customURLString)
-                    .textFieldStyle(.roundedBorder)
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Custom URLs (up to 5, optional):")
+                ForEach(0..<5, id: \.self) { idx in
+                    TextField("https://example.com/page", text: $customURLStrings[idx])
+                        .textFieldStyle(.roundedBorder)
+                }
             }
 
             Text(status).font(.callout).foregroundStyle(.secondary)
@@ -93,12 +95,18 @@ struct ContentView: View {
         status = "Uploading pack…"
         do {
             let uploader = CloudKitUploader(containerID: containerID)
-            let trimmed = customURLString.trimmingCharacters(in: .whitespacesAndNewlines)
-            let url = trimmed.isEmpty ? nil : URL(string: trimmed)
-            let res = try await uploader.uploadPack(from: folder, version: version, customURL: url)
+
+            let urls = customURLStrings
+                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                .filter { !$0.isEmpty }
+                .compactMap { URL(string: $0) }
+            let res = try await uploader.uploadPack(from: folder, version: version, customURLs: Array(urls.prefix(5)))
+
             try await uploader.updateBootstrap(toLatest: res.packRecordID,
                                                version: res.version,
                                                bootstrapRecordName: bootstrapRecordName)
+
+            // Build bootstrap QR deep link
             let qrString = "lockerqyes://bootstrap?container=\(containerID)&record=\(bootstrapRecordName)"
             guard let img = QRGenerator.makeQR(from: qrString, scale: 10) else {
                 status = "Published v\(res.version), but QR failed."
