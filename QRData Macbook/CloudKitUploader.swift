@@ -18,14 +18,26 @@ struct CloudKitUploader {
 
     struct UploadResult { let packRecordID: CKRecord.ID; let version: Int }
 
-    // Added `customURLs` (up to 5)
-    func uploadPack(from folder: URL, version: Int, customURLs: [URL]) async throws -> UploadResult {
+    // Accepts a base folder of assets, up to 5 custom URLs, and extra file URLs (e.g., CSVs)
+    func uploadPack(
+        from folder: URL,
+        version: Int,
+        customURLs: [URL],
+        extraFileURLs: [URL]
+    ) async throws -> UploadResult {
         let db = container.publicCloudDatabase
 
-        // Gather files (regular files only)
-        let files = try FileManager.default.contentsOfDirectory(
+        // Gather files from folder (regular files only)
+        let folderFiles = try FileManager.default.contentsOfDirectory(
             at: folder, includingPropertiesForKeys: [.isRegularFileKey], options: [.skipsHiddenFiles]
         ).filter { (try? $0.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile) ?? false }
+
+        // Merge with extra files (e.g., CSVs) and de-duplicate by absoluteString
+        var combinedByPath = [String: URL]()
+        for url in folderFiles + extraFileURLs {
+            combinedByPath[url.absoluteString] = url
+        }
+        let allFiles = Array(combinedByPath.values)
 
         // Build manifest + CKRecord
         struct Manifest: Codable {
@@ -58,7 +70,7 @@ struct CloudKitUploader {
             var i = 2
             while usedKeys.contains(key) {
                 var base = proposed
-                if base.count > 250 { base = String(base.prefix(250)) }
+                if base.count > 250 { base = String(base.prefix(250)) } // reserve for suffix
                 key = "\(base)_\(i)"
                 i += 1
             }
@@ -69,7 +81,7 @@ struct CloudKitUploader {
         var items: [Manifest.Item] = []
         let record = CKRecord(recordType: "ContentPack")
 
-        for file in files {
+        for file in allFiles {
             let name = file.lastPathComponent
             let key = uniqueKey(sanitizedFieldKey(for: name))
             let hex = try sha256Hex(file)

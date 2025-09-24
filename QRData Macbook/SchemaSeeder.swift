@@ -12,14 +12,22 @@ import CryptoKit
 enum SchemaSeeder {
 
     // Call this once at app launch or via a button in ContentView
-    static func seed(containerID: String, sampleFolder: URL) async throws {
+    // extraCSVURLs lets you include selected CSVs when seeding to create matching fields
+    static func seed(containerID: String, sampleFolder: URL, extraCSVURLs: [URL] = []) async throws {
         let container = CKContainer(identifier: containerID)
         let db = container.publicCloudDatabase
 
-        // 1) Build a tiny manifest for whatever is inside sampleFolder
-        let files = try FileManager.default.contentsOfDirectory(
+        // Build a tiny manifest for whatever is inside sampleFolder + extraCSVURLs
+        let folderFiles = try FileManager.default.contentsOfDirectory(
             at: sampleFolder, includingPropertiesForKeys: [.isRegularFileKey], options: [.skipsHiddenFiles]
         ).filter { (try? $0.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile) ?? false }
+
+        // Merge and de-duplicate
+        var combinedByPath = [String: URL]()
+        for url in folderFiles + extraCSVURLs {
+            combinedByPath[url.absoluteString] = url
+        }
+        let files = Array(combinedByPath.values)
 
         struct Manifest: Codable {
             struct Item: Codable { let key: String; let filename: String; let sha256: String }
@@ -76,10 +84,10 @@ enum SchemaSeeder {
         packRecord["version"]  = manifest.version as CKRecordValue
         packRecord["manifest"] = CKAsset(fileURL: tmpManifestURL)
 
-        // 2) Save ContentPack (creates the record type/fields in Development)
+        // Save ContentPack (creates the record type/fields in Development)
         let savedPack = try await db.save(packRecord)
 
-        // 3) Create/update the single Bootstrap record (fixed name)
+        // Create/update the single Bootstrap record (fixed name)
         let bootstrapID = CKRecord.ID(recordName: "bootstrap-lockerqyes")
         let existing = try? await db.record(for: bootstrapID)
         let bootstrap = existing ?? CKRecord(recordType: "Bootstrap", recordID: bootstrapID)
