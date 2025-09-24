@@ -12,15 +12,15 @@ import AppKit
 struct ContentView: View {
 
     // ==== Configure this once ====
-    // Updated with your real container ID.
     private let containerID = "iCloud.com.kaushikmanian.LockerQ"
-    private let bootstrapRecordName = "bootstrap-lockerqyes"     // fixed durable name
+    private let bootstrapRecordName = "bootstrap-lockerqyes"
 
     // ==== UI state ====
     @State private var folderURL: URL?
     @State private var version: Int = Int(Date().timeIntervalSince1970)
     @State private var status: String = "Select a folder and Publish."
     @State private var latestQR: NSImage?
+    @State private var customURLString: String = ""
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -41,6 +41,12 @@ struct ContentView: View {
                 Button("Seed Schema…") { Task { await seedSchema() } }
                 Button("Publish to CloudKit") { Task { await publish() } }
                     .keyboardShortcut(.defaultAction)
+            }
+
+            HStack(spacing: 12) {
+                Text("Custom URL (optional):")
+                TextField("https://example.com/page", text: $customURLString)
+                    .textFieldStyle(.roundedBorder)
             }
 
             Text(status).font(.callout).foregroundStyle(.secondary)
@@ -87,11 +93,12 @@ struct ContentView: View {
         status = "Uploading pack…"
         do {
             let uploader = CloudKitUploader(containerID: containerID)
-            let res = try await uploader.uploadPack(from: folder, version: version)
+            let trimmed = customURLString.trimmingCharacters(in: .whitespacesAndNewlines)
+            let url = trimmed.isEmpty ? nil : URL(string: trimmed)
+            let res = try await uploader.uploadPack(from: folder, version: version, customURL: url)
             try await uploader.updateBootstrap(toLatest: res.packRecordID,
                                                version: res.version,
                                                bootstrapRecordName: bootstrapRecordName)
-            // Build bootstrap QR deep link
             let qrString = "lockerqyes://bootstrap?container=\(containerID)&record=\(bootstrapRecordName)"
             guard let img = QRGenerator.makeQR(from: qrString, scale: 10) else {
                 status = "Published v\(res.version), but QR failed."

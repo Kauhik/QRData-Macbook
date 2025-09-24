@@ -18,7 +18,7 @@ struct CloudKitUploader {
 
     struct UploadResult { let packRecordID: CKRecord.ID; let version: Int }
 
-    func uploadPack(from folder: URL, version: Int) async throws -> UploadResult {
+    func uploadPack(from folder: URL, version: Int, customURL: URL?) async throws -> UploadResult {
         let db = container.publicCloudDatabase
 
         // Gather files (regular files only)
@@ -40,7 +40,7 @@ struct CloudKitUploader {
 
         // Sanitizer for CKRecord field keys: allow [A-Za-z0-9_], ensure <= 255, unique per record
         func sanitizedFieldKey(for filename: String) -> String {
-            let baseName = filename // keep case; just sanitize
+            let baseName = filename
             var core = baseName.replacingOccurrences(of: "[^A-Za-z0-9]+",
                                                      with: "_",
                                                      options: .regularExpression)
@@ -57,7 +57,7 @@ struct CloudKitUploader {
             var i = 2
             while usedKeys.contains(key) {
                 var base = proposed
-                if base.count > 250 { base = String(base.prefix(250)) } // reserve for suffix
+                if base.count > 250 { base = String(base.prefix(250)) }
                 key = "\(base)_\(i)"
                 i += 1
             }
@@ -74,6 +74,11 @@ struct CloudKitUploader {
             let hex = try sha256Hex(file)
             items.append(.init(key: key, filename: name, sha256: hex))
             record[key] = CKAsset(fileURL: file)
+        }
+
+        // Optional custom URL field on the pack
+        if let customURL {
+            record["customURL"] = customURL.absoluteString as CKRecordValue
         }
 
         let manifest = Manifest(version: version, assets: items)
